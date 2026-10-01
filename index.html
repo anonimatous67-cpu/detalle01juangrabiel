@@ -1,0 +1,1767 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Abrázame Muy Fuerte — Cuaderno</title>
+
+<style>
+
+/* =====================================================
+   CONFIGURACIÓN GENERAL
+   ===================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #642034 0%,
+            #35121d 48%,
+            #16070c 100%
+        );
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    overflow: hidden;
+
+    color: #432727;
+}
+
+
+/* =====================================================
+   BIENVENIDA
+   ===================================================== */
+
+.splash {
+
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(117,38,58,.92),
+            rgba(20,6,11,.98)
+        );
+
+    transition:
+        opacity 1s ease,
+        visibility 1s ease;
+}
+
+.splash.hidden {
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.welcome {
+
+    width: min(620px,95vw);
+
+    padding: 55px 35px;
+
+    text-align: center;
+
+    color: #f7e8d2;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(68,19,32,.95),
+            rgba(27,7,14,.95)
+        );
+
+    border:
+        1px solid
+        rgba(247,232,210,.28);
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 35px 90px rgba(0,0,0,.65),
+        inset 0 0 60px rgba(255,255,255,.03);
+
+    animation:
+        welcomeAppear 1.5s ease;
+}
+
+.heart {
+
+    font-size: 60px;
+    margin-bottom: 15px;
+
+    animation:
+        heartbeat 2s infinite;
+}
+
+.welcome h1 {
+
+    font-size:
+        clamp(35px,7vw,62px);
+
+    font-weight: normal;
+    letter-spacing: 2px;
+
+    margin-bottom: 15px;
+}
+
+.welcome h2 {
+
+    font-size: 18px;
+    font-weight: normal;
+    font-style: italic;
+
+    opacity: .8;
+
+    margin-bottom: 30px;
+}
+
+.welcome p {
+
+    font-size: 16px;
+    line-height: 1.8;
+
+    opacity: .9;
+
+    margin-bottom: 35px;
+}
+
+.open-btn {
+
+    padding:
+        14px 35px;
+
+    border:
+        1px solid #e7c7a8;
+
+    border-radius: 30px;
+
+    background: transparent;
+
+    color: #f7e8d2;
+
+    font-family: inherit;
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition: .3s ease;
+}
+
+.open-btn:hover {
+
+    background: #e7c7a8;
+
+    color: #32101a;
+
+    transform:
+        translateY(-3px);
+}
+
+
+/* =====================================================
+   CONTENEDOR DEL LIBRO
+   ===================================================== */
+
+.book-container {
+
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+}
+
+
+/* =====================================================
+   LIBRO
+   ===================================================== */
+
+.book {
+
+    position: relative;
+
+    width: min(1050px,96vw);
+
+    height: min(800px,94vh);
+
+    perspective: 2800px;
+
+    transform-style: preserve-3d;
+
+    transform:
+        rotateX(1deg);
+}
+
+
+/* =====================================================
+   PÁGINAS
+   ===================================================== */
+
+.page {
+
+    position: absolute;
+
+    inset: 0;
+
+    padding:
+        42px
+        65px
+        55px
+        95px;
+
+    overflow: hidden;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            rgba(80,40,20,.12),
+            transparent 4%,
+            transparent 96%,
+            rgba(80,40,20,.10)
+        ),
+
+        linear-gradient(
+            to bottom,
+            rgba(255,255,255,.20),
+            transparent 10%,
+            transparent 90%,
+            rgba(80,40,20,.08)
+        ),
+
+        #f5e6cc;
+
+    border-radius:
+        4px
+        13px
+        13px
+        4px;
+
+    box-shadow:
+
+        0 12px 25px rgba(0,0,0,.35),
+
+        inset 0 0 35px
+        rgba(90,50,20,.08);
+
+    transform-origin:
+        left center;
+
+    transition:
+
+        transform 1s
+        cubic-bezier(.65,.05,.36,1),
+
+        box-shadow 1s ease;
+
+    transform-style:
+        preserve-3d;
+
+    backface-visibility:
+        hidden;
+
+    z-index: 1;
+}
+
+
+/* =====================================================
+   MARGEN
+   ===================================================== */
+
+.page::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 60px;
+
+    top: 0;
+    bottom: 0;
+
+    width: 1px;
+
+    background:
+        rgba(130,70,70,.18);
+}
+
+
+/* =====================================================
+   SOMBRA DEL PAPEL
+   ===================================================== */
+
+.page::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            rgba(0,0,0,.05),
+            transparent 8%,
+            transparent 92%,
+            rgba(0,0,0,.04)
+        );
+
+    opacity: .6;
+}
+
+
+/* =====================================================
+   EFECTO DE PASAR PÁGINA
+   ===================================================== */
+
+.page.next {
+
+    transform:
+        rotateY(0deg);
+
+    z-index: 20;
+}
+
+.page.current {
+
+    transform:
+        rotateY(0deg);
+
+    z-index: 50;
+}
+
+.page.flipped {
+
+    transform:
+        rotateY(-180deg);
+
+    box-shadow:
+        -15px 10px 30px
+        rgba(0,0,0,.30);
+
+    z-index: 10;
+}
+
+.page.flipping {
+
+    box-shadow:
+        15px 12px 40px
+        rgba(0,0,0,.50);
+}
+
+
+/* =====================================================
+   ESPIRAL
+   ===================================================== */
+
+.spiral {
+
+    position: absolute;
+
+    left: 17px;
+    top: 20px;
+    bottom: 20px;
+
+    width: 32px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content:
+        space-around;
+
+    z-index: 50;
+}
+
+.spiral span {
+
+    width: 27px;
+    height: 12px;
+
+    border:
+        2px solid #555;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            #ccc,
+            #888
+        );
+
+    box-shadow:
+
+        inset 0 1px 2px
+        rgba(255,255,255,.8),
+
+        1px 2px 3px
+        rgba(0,0,0,.35);
+}
+
+
+/* =====================================================
+   CONTENIDO
+   ===================================================== */
+
+.page-number {
+
+    position: absolute;
+
+    top: 18px;
+    right: 30px;
+
+    color: #94726b;
+
+    font-size: 13px;
+
+    font-style: italic;
+}
+
+.song-label {
+
+    text-transform: uppercase;
+
+    letter-spacing: 3px;
+
+    font-size: 11px;
+
+    color: #9b5962;
+
+    margin-bottom: 5px;
+}
+
+.song-title {
+
+    color: #4d2028;
+
+    font-size:
+        clamp(28px,4.5vw,46px);
+
+    font-weight: normal;
+
+    line-height: 1.05;
+
+    margin-bottom: 5px;
+}
+
+.artist {
+
+    color: #80605a;
+
+    font-size: 18px;
+
+    font-style: italic;
+
+    margin-bottom: 12px;
+}
+
+.separator {
+
+    width: 90px;
+
+    height: 1px;
+
+    background: #a87878;
+
+    margin-bottom: 12px;
+}
+
+.meaning-title {
+
+    color: #5d3035;
+
+    font-size: 19px;
+
+    margin-bottom: 5px;
+}
+
+.meaning {
+
+    max-width: 850px;
+
+    color: #4e3a38;
+
+    font-size: 15px;
+
+    line-height: 1.4;
+
+    margin-bottom: 12px;
+}
+
+
+/* =====================================================
+   IMAGEN GRANDE
+   ===================================================== */
+
+.image-container {
+
+    width: 100%;
+
+    /*
+       Mucho más grande.
+    */
+
+    height: 430px;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background:
+        #dfcbb0;
+
+    border:
+        1px solid
+        rgba(100,60,40,.25);
+
+    border-radius: 10px;
+
+    box-shadow:
+
+        inset 0 0 25px
+        rgba(80,40,20,.10),
+
+        0 7px 20px
+        rgba(50,20,20,.15);
+
+    /*
+       La imagen se adapta
+       completamente al marco.
+    */
+
+    position: relative;
+}
+
+.song-image {
+
+    /*
+       Ocupa todo el espacio
+       disponible.
+    */
+
+    width: 100%;
+
+    height: 100%;
+
+    /*
+       IMPORTANTE:
+
+       contain hace que se vea
+       LA IMAGEN COMPLETA.
+
+       No se recorta.
+    */
+
+    object-fit: contain;
+
+    object-position: center;
+
+    display: block;
+
+    transition:
+        transform .6s ease;
+}
+
+.image-container:hover
+.song-image {
+
+    transform:
+        scale(1.02);
+}
+
+
+/* =====================================================
+   NAVEGACIÓN
+   ===================================================== */
+
+.navigation {
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    bottom: 8px;
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    padding:
+        0 20px;
+
+    z-index: 500;
+
+    pointer-events: none;
+}
+
+.nav-btn {
+
+    pointer-events: auto;
+
+    width: 45px;
+    height: 45px;
+
+    border:
+        1px solid
+        rgba(100,50,50,.35);
+
+    border-radius: 50%;
+
+    background:
+        rgba(245,231,206,.96);
+
+    color: #642c36;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    transition:
+        .25s ease;
+
+    box-shadow:
+        0 3px 8px
+        rgba(0,0,0,.15);
+}
+
+.nav-btn:hover {
+
+    background: #642c36;
+
+    color: #f5e7ce;
+
+    transform:
+        scale(1.08);
+}
+
+.nav-btn:disabled {
+
+    opacity: .25;
+
+    cursor: default;
+
+    transform: none;
+}
+
+.counter {
+
+    color: #7b5953;
+
+    font-size: 13px;
+
+    font-style: italic;
+
+    background:
+        rgba(245,231,206,.9);
+
+    padding:
+        6px 14px;
+
+    border-radius: 20px;
+}
+
+
+/* =====================================================
+   ANIMACIONES
+   ===================================================== */
+
+@keyframes welcomeAppear {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(30px)
+            scale(.96);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+@keyframes heartbeat {
+
+    0%,
+    100% {
+
+        transform:
+            scale(1);
+    }
+
+    50% {
+
+        transform:
+            scale(1.15);
+    }
+}
+
+
+/* =====================================================
+   CELULAR
+   ===================================================== */
+
+@media (max-width:700px) {
+
+    .book-container {
+
+        padding: 5px;
+    }
+
+    .book {
+
+        width: 99vw;
+
+        height: 94vh;
+    }
+
+    .page {
+
+        padding:
+            40px
+            18px
+            50px
+            48px;
+    }
+
+    .page::before {
+
+        left: 34px;
+    }
+
+    .spiral {
+
+        left: 5px;
+    }
+
+    .spiral span {
+
+        width: 21px;
+        height: 9px;
+    }
+
+    .page-number {
+
+        top: 13px;
+        right: 12px;
+    }
+
+    .song-title {
+
+        font-size: 26px;
+    }
+
+    .artist {
+
+        font-size: 14px;
+
+        margin-bottom: 7px;
+    }
+
+    .meaning-title {
+
+        font-size: 16px;
+
+        margin-bottom: 4px;
+    }
+
+    .meaning {
+
+        font-size: 12.5px;
+
+        line-height: 1.3;
+
+        margin-bottom: 8px;
+    }
+
+    /*
+       Imagen todavía más grande
+       en celular.
+    */
+
+    .image-container {
+
+        height: 400px;
+
+        width: 100%;
+    }
+
+    .navigation {
+
+        bottom: 5px;
+
+        padding:
+            0 8px;
+    }
+
+    .nav-btn {
+
+        width: 38px;
+        height: 38px;
+
+        font-size: 19px;
+    }
+
+    .counter {
+
+        font-size: 12px;
+
+        padding:
+            5px 11px;
+    }
+
+    .welcome {
+
+        padding:
+            40px 23px;
+    }
+
+    .welcome h1 {
+
+        font-size: 37px;
+    }
+
+    .welcome p {
+
+        font-size: 14px;
+    }
+}
+
+
+/* =====================================================
+   PANTALLAS MUY PEQUEÑAS
+   ===================================================== */
+
+@media (max-height:700px) {
+
+    .page {
+
+        padding-top: 35px;
+    }
+
+    .meaning {
+
+        font-size: 12px;
+
+        line-height: 1.25;
+
+        margin-bottom: 6px;
+    }
+
+    .image-container {
+
+        height: 330px;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     BIENVENIDA
+     ===================================================== -->
+
+<div
+    class="splash"
+    id="splash"
+>
+
+    <div class="welcome">
+
+        <div class="heart">
+            ♡
+        </div>
+
+        <h1>
+            Abrázame Muy Fuerte
+        </h1>
+
+        <h2>
+            Un cuaderno de canciones,
+            recuerdos y sentimientos
+        </h2>
+
+        <p>
+            Hay canciones que no solamente se escuchan...
+            algunas parecen decir exactamente aquello
+            que nosotros nunca pudimos expresar.
+        </p>
+
+        <!-- SOLO AUDIO DE BIENVENIDA -->
+
+        <audio
+            id="welcomeAudio"
+            preload="auto"
+        >
+
+            <source
+                src="audio.mp4"
+                type="audio/mpeg"
+            >
+
+        </audio>
+
+        <button
+            class="open-btn"
+            onclick="startBook()"
+        >
+
+            Abrir cuaderno
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     LIBRO
+     ===================================================== -->
+
+<div class="book-container">
+
+    <div
+        class="book"
+        id="book"
+    >
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   CANCIONES
+   ===================================================== */
+
+const songs = [
+
+    {
+        title: "The Night We Met",
+        artist: "Lord Huron",
+
+        image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSioocCklZmz0t_CFEEngQ4D4YJA-f0j1nQMUELcIalMg&s=10",
+
+        meaning:
+        "Habla de extrañar profundamente a alguien y de desear regresar al momento en que todo comenzó. Es una canción sobre los recuerdos, la pérdida y ese sentimiento de querer cambiar lo que sucedió."
+    },
+
+    {
+        title: "Someone Like You",
+        artist: "Adele",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgOYWqVZMjaEyZuUQzq3xusSLPdCIrbAFDyY4XMA4tJEO813ROiiA1R0s&s=10",
+
+        meaning:
+        "Expresa el dolor de ver cómo alguien que amabas continúa con su vida. Aunque existe tristeza, también aparece la aceptación de que aquella persona puede encontrar felicidad lejos de ti."
+    },
+
+    {
+        title: "Another Love",
+        artist: "Tom Odell",
+        image: "https://lightning100.com/wp-content/uploads/64646_522275984470849_1342238_n.jpg",
+
+        meaning:
+        "Habla de querer amar nuevamente, pero sentirse emocionalmente agotado por heridas anteriores. Es el sentimiento de tener amor para dar, pero no tener fuerzas para entregarlo."
+    },
+
+    {
+        title: "Hurt",
+        artist: "Johnny Cash",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSL_takGo7itRFI6HkPk2wDJ3f1ScmT7ltV20tt3vOAlA&s=10",
+
+        meaning:
+        "Reflexiona sobre el dolor, los errores, los recuerdos y las consecuencias de una vida llena de pérdidas. Es una mirada profundamente personal hacia las heridas que permanecen con el tiempo."
+    },
+
+    {
+        title: "All I Want",
+        artist: "Kodaline",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZtbWUGpe-v20leKXVlj0d-7Usf8AQZ05kxXLacxBfAg&s=10",
+
+        meaning:
+        "Habla de querer quedarse junto a una persona incluso cuando la relación está llena de dificultades. Representa el deseo de tener a alguien que quizá ya no puede quedarse."
+    },
+
+    {
+        title: "When I Was Your Man",
+        artist: "Bruno Mars",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQT5CDxBiNUBP9qpD2m2Em6m0ULXntFJbpvC-5DiDI0A&s",
+
+        meaning:
+        "Es una canción sobre arrepentirse de no haber valorado a tiempo a la persona que amabas. Habla de reconocer demasiado tarde todos aquellos pequeños detalles que pudieron haber hecho la diferencia."
+    },
+
+    {
+        title: "Dancing On My Own",
+        artist: "Robyn",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREREiMwso0AGveD8bdtKjMvtpfnSAGi-qd6GuDYNNtag&s=10",
+
+        meaning:
+        "Representa estar cerca de alguien que ya está con otra persona y sentirse completamente solo. Es la imagen de observar desde lejos aquello que alguna vez deseaste tener."
+    },
+
+    {
+        title: "Jealous",
+        artist: "Labrinth",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZtwFAu6o2NrqR6HwXrzUHySzqIS0lCm0O7QeU7hlMmg&s=10",
+
+        meaning:
+        "Habla de los celos y del dolor que aparece cuando una persona importante sigue adelante sin ti. No se trata solamente de querer recuperar a alguien, sino de no saber cómo aceptar su ausencia."
+    },
+
+    {
+        title: "Lovely",
+        artist: "Billie Eilish & Khalid",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOWv71_NMtcppSmQoFrGmJWtUv0XQ7UUW64G8iC0Ffmg&s=10",
+
+        meaning:
+        "Expresa la sensación de estar atrapado dentro de una situación emocional de la que parece imposible escapar. Habla de soledad, miedo y de querer encontrar una salida."
+    },
+
+    {
+        title: "Arcade",
+        artist: "Duncan Laurence",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJlJarIsSNLCPQIZe6pwtKPtvpI-0vbH9ugKvRCGR5-A&s=10",
+
+        meaning:
+        "Compara el amor con un juego en el que uno continúa apostando aunque ya esté perdiendo. Representa entregar mucho por alguien y terminar sintiendo que nunca fue suficiente."
+    },
+
+    {
+        title: "Fix You",
+        artist: "Coldplay",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYzg7iDyL7xNttLCzmcCxNsxUbu1o5EDKinODIgq4qbYb-5qVwPYQqRLM&s=10",
+
+        meaning:
+        "Habla del deseo de ayudar a alguien que está sufriendo. Representa acompañar a una persona cuando está rota y querer hacer todo lo posible para aliviar su dolor."
+    },
+
+    {
+        title: "Let Her Go",
+        artist: "Passenger",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTj0e2_4KO4DlFVz24_fTulMUBPA7x81uPnLNDcOu8AUA&s=10",
+
+        meaning:
+        "Habla de comprender el valor de alguien solamente después de perderlo. Es una reflexión sobre cómo muchas veces reconocemos lo importante cuando ya no está."
+    },
+
+    {
+        title: "Skinny Love",
+        artist: "Bon Iver",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnKkFVOijEpxiDjTWudBLqMPmmxFNsWNxBnYFs2Avivg&s",
+
+        meaning:
+        "Describe una relación que todavía tiene sentimientos, pero que se encuentra debilitada y llena de heridas. Es un amor que quiere sobrevivir aunque ambos saben que algo ya se rompió."
+    },
+
+    {
+        title: "Say Something",
+        artist: "A Great Big World & Christina Aguilera",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1wsL7wmL_XluJ8DOg9eW9NGnlgpFTtDTwoZmH2OhenQ&s=10",
+
+        meaning:
+        "Habla de estar a punto de abandonar una relación y esperar desesperadamente una última señal. Representa ese momento en el que todavía quieres quedarte, pero ya no sabes si debes hacerlo."
+    },
+
+    {
+        title: "I Will Always Love You",
+        artist: "Whitney Houston",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO4czASVP86g3xhyFuQ5yVMB0SisIBoZRDhnsCJ26JIA&s=10",
+
+        meaning:
+        "Expresa un amor que permanece incluso cuando dos personas tienen que separarse. No siempre amar significa quedarse; algunas veces también significa dejar ir deseándole felicidad a la otra persona."
+    },
+
+    {
+        title: "Nothing Compares 2 U",
+        artist: "Sinéad O'Connor",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLkZsdT0tZJY85EmnGKGW5QpS9cB16mHvBBmoE1zakXw&s",
+
+        meaning:
+        "Habla de cómo la ausencia de una persona puede hacer que todo lo demás pierda sentido. Representa comparar nuevos momentos con recuerdos que todavía duelen."
+    },
+
+    {
+        title: "Everybody Hurts",
+        artist: "R.E.M.",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSti5Q1zTGp6dJfRVDqIbDXAGILdngAMTS9m-M439arfg&s=10",
+
+        meaning:
+        "Es una canción sobre atravesar momentos difíciles y recordar que sentirse mal no significa estar solo. Habla de resistir incluso cuando parece que ya no quedan fuerzas."
+    },
+
+    {
+        title: "Mad World",
+        artist: "Gary Jules",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQznQBBDxahdaxGSd4Tv30gkmDVZ6P35fn5fAGnd3z9cw&s=10",
+
+        meaning:
+        "Retrata una sensación de desconexión y tristeza frente a un mundo que continúa avanzando. Representa sentirse diferente, vacío o perdido mientras todos los demás parecen seguir con normalidad."
+    },
+
+    {
+        title: "Creep",
+        artist: "Radiohead",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdD66H8vvt3AHVXrPjhhNYurd0SaDDnHR_6FA5i5cC9w&s=10",
+
+        meaning:
+        "Expresa inseguridad, sentirse fuera de lugar y pensar que no se merece a la persona que desea. Es una canción relacionada con la vulnerabilidad y una autoestima profundamente lastimada."
+    },
+
+    {
+        title: "The Scientist",
+        artist: "Coldplay",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmqU_mImx49eTM3PRv5lWnqgmupGM18ts-mlWBdsCmDw&s=10",
+
+        meaning:
+        "Habla del arrepentimiento y del deseo de volver al comienzo para comprender qué salió mal. Representa querer reparar una historia que terminó antes de estar preparado para dejarla atrás."
+    }
+
+];
+
+
+/* =====================================================
+   CREAR LIBRO
+   ===================================================== */
+
+const book =
+    document.getElementById("book");
+
+let currentPage = 0;
+
+
+/* =====================================================
+   ESPIRAL
+   ===================================================== */
+
+function createSpiral() {
+
+    const spiral =
+        document.createElement("div");
+
+    spiral.className =
+        "spiral";
+
+    for (
+        let i = 0;
+        i < 17;
+        i++
+    ) {
+
+        const ring =
+            document.createElement("span");
+
+        spiral.appendChild(ring);
+
+    }
+
+    return spiral;
+}
+
+
+/* =====================================================
+   CREAR PÁGINAS
+   ===================================================== */
+
+songs.forEach(
+    (song,index) => {
+
+        const page =
+            document.createElement("section");
+
+        page.className =
+            "page";
+
+
+        if (index === 0) {
+
+            page.classList.add(
+                "current"
+            );
+
+        } else {
+
+            page.classList.add(
+                "next"
+            );
+
+        }
+
+
+        page.dataset.page =
+            index;
+
+
+        page.innerHTML = `
+
+            <div class="page-number">
+
+                Página
+                ${index + 1}
+                de
+                ${songs.length}
+
+            </div>
+
+
+            <div class="song-label">
+
+                Canción
+                ${index + 1}
+
+            </div>
+
+
+            <h1 class="song-title">
+
+                ${song.title}
+
+            </h1>
+
+
+            <div class="artist">
+
+                ${song.artist}
+
+            </div>
+
+
+            <div class="separator"></div>
+
+
+            <h2 class="meaning-title">
+
+                ¿Qué significa?
+
+            </h2>
+
+
+            <p class="meaning">
+
+                ${song.meaning}
+
+            </p>
+
+
+            <div class="image-container">
+
+                <img
+                    class="song-image"
+                    src="${song.image}"
+                    alt="${song.title}"
+
+                    onerror="
+                        this.onerror=null;
+                        this.src='imagenes/${index + 1}.jpg';
+                    "
+                >
+
+            </div>
+
+        `;
+
+
+        page.appendChild(
+            createSpiral()
+        );
+
+
+        book.appendChild(
+            page
+        );
+
+    }
+);
+
+
+/* =====================================================
+   NAVEGACIÓN
+   ===================================================== */
+
+const navigation =
+    document.createElement("div");
+
+navigation.className =
+    "navigation";
+
+
+navigation.innerHTML = `
+
+    <button
+        class="nav-btn"
+        id="prevBtn"
+        onclick="previousPage()"
+    >
+        ←
+    </button>
+
+
+    <div
+        class="counter"
+        id="counter"
+    >
+        1 / 20
+    </div>
+
+
+    <button
+        class="nav-btn"
+        id="nextBtn"
+        onclick="nextPage()"
+    >
+        →
+    </button>
+
+`;
+
+
+book.appendChild(
+    navigation
+);
+
+
+/* =====================================================
+   ACTUALIZAR LIBRO
+   ===================================================== */
+
+function updateBook() {
+
+    const pages =
+        document.querySelectorAll(
+            ".page"
+        );
+
+
+    pages.forEach(
+        (page,index) => {
+
+            page.classList.remove(
+                "current",
+                "next"
+            );
+
+
+            if (
+                index < currentPage
+            ) {
+
+                page.classList.add(
+                    "flipped"
+                );
+
+            }
+
+            else if (
+                index === currentPage
+            ) {
+
+                page.classList.remove(
+                    "flipped"
+                );
+
+                page.classList.add(
+                    "current"
+                );
+
+            }
+
+            else {
+
+                page.classList.remove(
+                    "flipped"
+                );
+
+                page.classList.add(
+                    "next"
+                );
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "counter"
+    ).textContent =
+        `${currentPage + 1} / ${songs.length}`;
+
+
+    document.getElementById(
+        "prevBtn"
+    ).disabled =
+        currentPage === 0;
+
+
+    document.getElementById(
+        "nextBtn"
+    ).disabled =
+        currentPage ===
+        songs.length - 1;
+}
+
+
+/* =====================================================
+   PASAR PÁGINA
+   ===================================================== */
+
+function nextPage() {
+
+    if (
+        currentPage >=
+        songs.length - 1
+    ) {
+
+        return;
+
+    }
+
+
+    const pages =
+        document.querySelectorAll(
+            ".page"
+        );
+
+
+    const page =
+        pages[currentPage];
+
+
+    page.classList.add(
+        "flipping"
+    );
+
+
+    setTimeout(
+        () => {
+
+            currentPage++;
+
+            updateBook();
+
+        },
+        50
+    );
+
+
+    setTimeout(
+        () => {
+
+            page.classList.remove(
+                "flipping"
+            );
+
+        },
+        1000
+    );
+}
+
+
+/* =====================================================
+   VOLVER PÁGINA
+   ===================================================== */
+
+function previousPage() {
+
+    if (
+        currentPage <= 0
+    ) {
+
+        return;
+
+    }
+
+
+    const pages =
+        document.querySelectorAll(
+            ".page"
+        );
+
+
+    const page =
+        pages[currentPage - 1];
+
+
+    page.classList.remove(
+        "flipped"
+    );
+
+    page.classList.add(
+        "flipping"
+    );
+
+
+    currentPage--;
+
+
+    requestAnimationFrame(
+        () => {
+
+            updateBook();
+
+        }
+    );
+
+
+    setTimeout(
+        () => {
+
+            page.classList.remove(
+                "flipping"
+            );
+
+        },
+        1000
+    );
+}
+
+
+/* =====================================================
+   AUDIO DE BIENVENIDA
+   ===================================================== */
+
+function startBook() {
+
+    const audio =
+        document.getElementById(
+            "welcomeAudio"
+        );
+
+
+    audio.currentTime = 0;
+
+
+    audio.play().catch(
+        error => {
+
+            console.log(
+                "No se pudo reproducir el audio:",
+                error
+            );
+
+        }
+    );
+
+
+    document
+        .getElementById("splash")
+        .classList.add(
+            "hidden"
+        );
+}
+
+
+/* =====================================================
+   TECLADO
+   ===================================================== */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key ===
+            "ArrowRight"
+        ) {
+
+            nextPage();
+
+        }
+
+
+        if (
+            event.key ===
+            "ArrowLeft"
+        ) {
+
+            previousPage();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   CLICK
+   ===================================================== */
+
+book.addEventListener(
+    "click",
+    event => {
+
+        if (
+            event.target.tagName ===
+            "BUTTON"
+        ) {
+
+            return;
+
+        }
+
+
+        const rect =
+            book.getBoundingClientRect();
+
+
+        const x =
+            event.clientX -
+            rect.left;
+
+
+        if (
+            x > rect.width / 2
+        ) {
+
+            nextPage();
+
+        }
+
+        else {
+
+            previousPage();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   SWIPE
+   ===================================================== */
+
+let touchStartX = 0;
+let touchEndX = 0;
+
+
+book.addEventListener(
+    "touchstart",
+    event => {
+
+        touchStartX =
+            event.changedTouches[0]
+                .screenX;
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+book.addEventListener(
+    "touchend",
+    event => {
+
+        touchEndX =
+            event.changedTouches[0]
+                .screenX;
+
+
+        const distance =
+            touchEndX -
+            touchStartX;
+
+
+        if (
+            Math.abs(distance) < 50
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            distance < 0
+        ) {
+
+            nextPage();
+
+        }
+
+        else {
+
+            previousPage();
+
+        }
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+/* =====================================================
+   INICIAR
+   ===================================================== */
+
+updateBook();
+
+</script>
+
+</body>
+
+</html>
